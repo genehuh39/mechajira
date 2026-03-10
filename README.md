@@ -1,5 +1,7 @@
 # jplan
 
+<img src="logo.svg" alt="jplan logo" width="100" />
+
 Fetch a Jira ticket and scaffold a [Claude Code](https://claude.ai/claude-code) Plan Mode session — ADF to Markdown, code reference scouting, and session persistence in one command.
 
 ## Install
