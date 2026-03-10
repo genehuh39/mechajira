@@ -1,0 +1,20 @@
+# Rust build output
+target/
+**/*.rs.bk
+Cargo.lock
+
+# Compiled binaries
+jplan
+jplan.exe
+
+# Secrets and local config
+.env
+~/.config/jplan/
+
+# Claude Code session state
+.claude/session.json
+.claude/history/
+
+# OS
+.DS_Store
+Thumbs.db
