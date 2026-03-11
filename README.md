@@ -77,18 +77,46 @@ This copies `work-on` and `finish-work` into `.claude/skills/` so Claude Code pi
 
 ### Using the skills
 
-**`/work-on [PROJ-123]`**
+**`/work-on [PROJ-123] [spec|plan]`**
 
 With a ticket key:
 1. Runs `mechajira PROJ-123`
 2. Determines the conventional commit type (`feat`, `fix`, etc.) — asks if unclear
 3. Creates branch `<type>/<KEY>-<slug>` (e.g. `feat/proj-123-oauth2-login`)
-4. Enters Plan Mode with a step-by-step implementation plan
+4. Enters the chosen execution mode (see below)
 
 Without a ticket key (`/work-on`):
 1. Lists the active session (from `.claude/session.json`) labeled **[ACTIVE]**
 2. Lists any archived sessions in `.claude/history/` whose branch still exists locally, labeled **[IN PROGRESS]**
 3. Prompts you to pick a ticket or supply a new key
+
+#### Execution modes
+
+| Invocation | Behavior |
+|------------|----------|
+| `/work-on PROJ-123` | Auto-detect: if spectremon absent → Plan Mode; if present → prompts you to choose |
+| `/work-on PROJ-123 spec` | Spec-driven mode via spectremon (errors if not installed) |
+| `/work-on PROJ-123 plan` | Plan Mode — skips spectremon even if installed |
+
+#### spectremon integration (SDD)
+
+mechajira integrates with [spectremon](https://github.com/spectremon/spectremon) to turn a Jira ticket into a formal spec before any code is written.
+
+When spec mode is used, the skill composes an intent block from the ticket (summary, description, comments, code references, branch) and triggers spectremon's Discovery agent. Discovery produces three files:
+
+- `.sdd/requirements.md` — EARS-style functional and non-functional requirements
+- `.sdd/design.md` — architecture and design decisions
+- `.sdd/tasks.md` — atomic implementation tasks
+
+The spectremon Implementer/Architect loop then drives execution — Plan Mode is not entered.
+
+To enable spec mode, scaffold spectremon once in your repo:
+
+```bash
+spectremon
+```
+
+This creates `.claude/spectremon.md`, which `/work-on` detects automatically.
 
 **`/finish-work [PROJ-123]`**
 
