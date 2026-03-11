@@ -35,4 +35,4 @@ PR titles **must** follow Conventional Commits format with the Jira key as scope
 ## Branch Hygiene
 - Work on the branch specified in `.claude/session.json`
 - Do not merge or rebase without reading `session.json` first
-- Run `jplan --archive` via the `finish-work` skill when a ticket is complete
+- Run `mechajira --archive` via the `finish-work` skill when a ticket is complete
