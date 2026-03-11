@@ -50,6 +50,6 @@ pub fn print_plan(
     // Session hint
     println!("{}", sep);
     println!("  session.json written to .claude/session.json");
-    println!("  Run `jplan --archive` when done to preserve history.");
+    println!("  Run `mechajira --archive` when done to preserve history.");
     println!("{}\n", sep);
 }

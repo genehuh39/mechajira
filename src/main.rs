@@ -11,7 +11,7 @@ use config::AppConfig;
 
 #[derive(Parser)]
 #[command(
-    name = "jplan",
+    name = "mechajira",
     about = "Fetch Jira tickets and scaffold Claude Code Plan Mode sessions",
     version
 )]
@@ -34,12 +34,16 @@ struct Cli {
     /// Copy work-on and finish-work skills into .claude/skills/ in the current directory
     #[arg(long)]
     install_skills: bool,
+
+    /// Remove the mechajira binary, skills store, and config directory
+    #[arg(long)]
+    uninstall: bool,
 }
 
 fn install_skills() -> Result<()> {
     let src = dirs::home_dir()
         .ok_or_else(|| anyhow::anyhow!("Could not determine home directory"))?
-        .join(".local/share/jplan/skills");
+        .join(".local/share/mechajira/skills");
 
     if !src.exists() {
         anyhow::bail!(
@@ -71,6 +75,33 @@ fn install_skills() -> Result<()> {
     Ok(())
 }
 
+fn uninstall() -> Result<()> {
+    use std::fs;
+
+    let home = dirs::home_dir()
+        .ok_or_else(|| anyhow::anyhow!("Could not determine home directory"))?;
+
+    let binary = home.join(".local/bin/mechajira");
+    let skills = home.join(".local/share/mechajira");
+    let config = home.join(".config/mechajira");
+
+    if binary.exists() {
+        fs::remove_file(&binary)?;
+        println!("✓ Removed {}", binary.display());
+    }
+    if skills.exists() {
+        fs::remove_dir_all(&skills)?;
+        println!("✓ Removed {}", skills.display());
+    }
+    if config.exists() {
+        fs::remove_dir_all(&config)?;
+        println!("✓ Removed {}", config.display());
+    }
+
+    println!("\nmechajira has been uninstalled.");
+    Ok(())
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     let _ = dotenvy::dotenv();
@@ -82,6 +113,10 @@ async fn main() -> Result<()> {
 
     if cli.install_skills {
         return install_skills();
+    }
+
+    if cli.uninstall {
+        return uninstall();
     }
 
     if cli.setup {
@@ -100,7 +135,7 @@ async fn main() -> Result<()> {
     let key = match cli.ticket_key {
         Some(k) => k.to_uppercase(),
         None => {
-            eprintln!("Usage: jplan <TICKET-KEY> [--archive] [--setup] [--config]");
+            eprintln!("Usage: mechajira <TICKET-KEY> [--archive] [--setup] [--config]");
             std::process::exit(1);
         }
     };

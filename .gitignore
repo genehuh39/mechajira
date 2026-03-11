@@ -4,12 +4,12 @@ target/
 Cargo.lock
 
 # Compiled binaries
-jplan
-jplan.exe
+mechajira
+mechajira.exe
 
 # Secrets and local config
 .env
-~/.config/jplan/
+~/.config/mechajira/
 
 # Claude Code session state
 .claude/session.json

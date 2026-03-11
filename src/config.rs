@@ -22,10 +22,10 @@ impl AppConfig {
     }
 }
 
-/// ~/.config/jplan/config.json
+/// ~/.config/mechajira/config.json
 pub fn config_path() -> PathBuf {
     let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
-    PathBuf::from(home).join(".config").join("jplan").join("config.json")
+    PathBuf::from(home).join(".config").join("mechajira").join("config.json")
 }
 
 pub fn load_config() -> Result<AppConfig> {
@@ -63,7 +63,7 @@ pub fn print_config() -> Result<()> {
         println!("Email       : {}", cfg.email);
         println!("API token   : {}", token_preview);
     } else {
-        println!("(no configuration found — run `jplan --setup`)");
+        println!("(no configuration found — run `mechajira --setup`)");
     }
     Ok(())
 }
@@ -81,7 +81,7 @@ pub fn run_setup_wizard(existing: Option<AppConfig>) -> Result<AppConfig> {
     let e = existing.unwrap_or_default();
     let theme = ColorfulTheme::default();
 
-    println!("=== jplan Setup ===\n");
+    println!("=== mechajira Setup ===\n");
 
     let domain_raw: String = Input::with_theme(&theme)
         .with_prompt("Jira domain (e.g. mycompany.atlassian.net)")

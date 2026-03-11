@@ -1,11 +1,11 @@
 #!/usr/bin/env zsh
 set -e
 
-BINARY_NAME="jplan"
+BINARY_NAME="mechajira"
 INSTALL_DIR="$HOME/.local/bin"
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "=== jplan installer ==="
+echo "=== mechajira installer ==="
 
 # ── 1. Ensure Rust is installed ──────────────────────────────────────────────
 if ! command -v cargo &>/dev/null; then
@@ -48,11 +48,11 @@ else
 fi
 
 # ── 5. Install skill files ────────────────────────────────────────────────────
-SKILLS_DIR="$HOME/.local/share/jplan/skills"
+SKILLS_DIR="$HOME/.local/share/mechajira/skills"
 mkdir -p "$SKILLS_DIR"
 cp -r "$PROJECT_DIR/.claude/skills/." "$SKILLS_DIR/"
 echo "✓ Skills installed to $SKILLS_DIR"
 
 echo ""
-echo "Run 'jplan --setup' to configure your Jira credentials."
-echo "Run 'jplan --install-skills' inside any repo to add the Claude Code skills."
+echo "Run 'mechajira --setup' to configure your Jira credentials."
+echo "Run 'mechajira --install-skills' inside any repo to add the Claude Code skills."
