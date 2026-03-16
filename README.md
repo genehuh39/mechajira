@@ -104,9 +104,9 @@ mechajira integrates with [spectremon](https://github.com/spectremon/spectremon)
 
 When spec mode is used, the skill composes an intent block from the ticket (summary, description, comments, code references, branch) and triggers spectremon's Discovery agent. Discovery produces three files:
 
-- `.sdd/requirements.md` — EARS-style functional and non-functional requirements
-- `.sdd/design.md` — architecture and design decisions
-- `.sdd/tasks.md` — atomic implementation tasks
+- `specs/requirements.md` — EARS-style functional and non-functional requirements
+- `specs/design.md` — architecture and design decisions
+- `specs/tasks.md` — atomic implementation tasks
 
 The spectremon Implementer/Architect loop then drives execution — Plan Mode is not entered.
 
@@ -123,12 +123,15 @@ This creates `.claude/spectremon.md`, which `/work-on` detects automatically.
 With a ticket key — verifies it matches the active session, then closes it out:
 1. Commits any remaining changes as `<type>(<KEY>): description`
 2. Runs `mechajira --archive`
-3. Switches to `main` and offers to delete the feature branch
+3. Pushes the feature branch: `git push -u origin <branch>`
+4. Detects frontend changes (`.tsx`, `.jsx`, `.vue`, `.css`, etc. or paths like `components/`, `pages/`) and optionally captures screenshots via Chrome DevTools if a dev server is running
+5. Creates a GitHub PR with title `<type>(<KEY>): <summary>` (type derived from branch prefix), a Jira link, summary bullets, and a test plan checklist
+6. Outputs the PR URL and confirms the session is archived
 
 Without a ticket key — auto-resolves the target:
 1. If there is exactly one in-progress ticket, uses it
 2. If there are multiple, lists them and asks which to finish
-3. Proceeds with commit, archive, and branch cleanup
+3. Proceeds with commit, archive, push, and PR creation
 
 ## Uninstall
 
