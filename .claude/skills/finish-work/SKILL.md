@@ -1,6 +1,6 @@
 ---
 name: finish-work
-description: Close out the current ticket session cleanly, archive session, and clean up branch
+description: Close out the current ticket session cleanly, push branch, create GitHub PR, and archive session
 ---
 
 # finish-work Skill
@@ -46,14 +46,67 @@ TICKET_KEY is optional. If omitted, the skill resolves the target ticket automat
 
 3. Run `mechajira --archive` to move `session.json` to `.claude/history/`
 
-4. Switch back to `main` (or `master`):
+4. Push the feature branch to origin:
    ```
-   git checkout main
-   ```
-
-5. Offer to delete the feature branch:
-   ```
-   git branch -d <branch>
+   git push -u origin <branch>
    ```
 
-6. Confirm the session is archived and branch is cleaned up
+5. Detect if frontend changes are present by running:
+   ```
+   git diff main...HEAD --name-only
+   ```
+   Flag as **frontend** if any changed file matches:
+   - Extensions: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.scss`, `.sass`, `.less`, `.html`
+   - OR path segments: `components/`, `pages/`, `views/`, `app/`, `frontend/`, `ui/`, `web/`
+
+6. Capture screenshots (frontend only, optional):
+
+   If frontend changes were detected:
+   - Ask: "Is a local dev server running? If so, what URL(s) should I screenshot?"
+   - If the user provides URLs:
+     - For each URL: use `mcp__chrome-devtools__navigate_page` → `mcp__chrome-devtools__take_screenshot`
+     - Save each screenshot to `./screenshots/<KEY>-<n>.png` using the Write tool
+     - Note paths for inclusion in the PR body
+   - If the user says no or skips, continue without screenshots
+
+7. Determine PR title:
+
+   Derive `<type>` from the branch name prefix (e.g. `feat/olp-32-...` → `feat`).
+   If the branch has no recognizable prefix (feat, fix, chore, refactor, test, docs, ci),
+   derive type from the commit type used in step 2.
+
+   PR title format (per CLAUDE.md):
+   ```
+   <type>(<KEY>): <summary>
+   ```
+   `<summary>` comes from `session.json → summary`.
+
+8. Create PR using `gh`:
+
+   Build PR body:
+   ```markdown
+   ## Summary
+   - <1-3 bullet points derived from ticket description/comments>
+   - Jira: <url from session.json>
+
+   ## Test plan
+   - [ ] <checklist items>
+
+   ## Screenshots
+   <If frontend: note "Screenshots saved to ./screenshots/ — drag into PR to attach." OR embed if supported>
+   ```
+
+   Run:
+   ```bash
+   gh pr create \
+     --title "<type>(<KEY>): <summary>" \
+     --body "$(cat <<'EOF'
+   <PR body>
+   EOF
+   )"
+   ```
+
+9. Confirm:
+   - Output the PR URL
+   - Confirm that the session is archived
+   - If screenshots were captured: remind the user to attach them to the PR if not already embedded
