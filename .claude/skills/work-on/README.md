@@ -49,9 +49,9 @@ When spec mode is selected, the skill:
 1. Composes an intent block from the Jira ticket (key, summary, URL, description, comments, code references, branch name).
 2. Triggers spectremon's Discovery agent by saying "Start Spectremon" with that intent block.
 3. Discovery generates three files:
-   - `.sdd/requirements.md` — EARS-style functional + non-functional requirements
-   - `.sdd/design.md` — architecture and design decisions
-   - `.sdd/tasks.md` — atomic implementation tasks
+   - `specs/requirements.md` — EARS-style functional + non-functional requirements
+   - `specs/design.md` — architecture and design decisions
+   - `specs/tasks.md` — atomic implementation tasks
 4. The spectremon Implementer/Architect loop takes over from there — Plan Mode is **not** entered.
 
 ### Installing spectremon
